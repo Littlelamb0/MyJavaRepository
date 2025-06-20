@@ -1,0 +1,40 @@
+import java.util.Scanner;
+
+public class EmployeeInfo {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Prompt for employee first name
+        System.out.print("Enter employee first name: ");
+        String firstName = scanner.nextLine();
+
+        // Prompt for employee last name
+        System.out.print("Enter employee last name: ");
+        String lastName = scanner.nextLine();
+
+        // Prompt for employee age
+        System.out.print("Enter employee age: ");
+        int age = scanner.nextInt();
+
+        // Prompt for number of hours worked in a day
+        System.out.print("Enter number of hours worked in a day: ");
+        float hoursWorked = scanner.nextFloat();
+
+        // Prompt for hourly wage
+        System.out.print("Enter employee hourly wage: ");
+        double hourlyWage = scanner.nextDouble();
+        
+        // Calculate the hours and hourly wage
+        double dailySalary = hoursWorked * hourlyWage;
+
+        // Display the collected information in the below
+        System.out.println("\nEmployee Information:");
+         System.out.println("-------------");
+        System.out.println("First Name: " + firstName);
+        System.out.println("Age: " + age + " years old");
+       System.out.printf("Daily Salary: PHP %.2f%n", dailySalary);
+
+        // Close the scanner
+        scanner.close();
+    }
+}
