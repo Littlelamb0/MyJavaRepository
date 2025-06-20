@@ -1,0 +1,125 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class EmployeeSystemGUI extends JFrame implements ActionListener {
+    private JTextField firstNameField;
+    private JTextField lastNameField;
+    private JTextField ageField;
+    private JTextField hoursPerDayField;
+    private JTextField hourlyWageField;
+    private JTextArea outputArea;
+
+    public EmployeeSystemGUI() {
+        setTitle("Employee System");
+        setSize(400, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Main panel with verticals layout
+        JPanel inputPanel = new JPanel(new GridLayout(6, 2, 5, 5)); // rows, cols, hgap, vgap
+
+        // Inputing fields
+        firstNameField = new JTextField();
+        lastNameField = new JTextField();
+        ageField = new JTextField();
+        hoursPerDayField = new JTextField();
+        hourlyWageField = new JTextField();
+
+        // Addding labels and fields to panels
+        inputPanel.add(new JLabel("First Name:"));
+        inputPanel.add(firstNameField);
+        inputPanel.add(new JLabel("Last Name:"));
+        inputPanel.add(lastNameField);
+        inputPanel.add(new JLabel("Age:"));
+        inputPanel.add(ageField);
+        inputPanel.add(new JLabel("Hours Worked per Day:"));
+        inputPanel.add(hoursPerDayField);
+        inputPanel.add(new JLabel("Hourly Wage:"));
+        inputPanel.add(hourlyWageField);
+
+        JButton calculateButton = new JButton("Calculate");
+        calculateButton.addActionListener(this);
+        inputPanel.add(calculateButton);
+
+        // Emptying cells next to button to align layout
+        inputPanel.add(new JLabel(""));
+
+        // Output area
+        outputArea = new JTextArea(5, 30);
+        outputArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(outputArea);
+
+        // Adding components to frames
+        add(inputPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+
+        setVisible(true);
+    }
+
+    // Action handler
+    public void actionPerformed(ActionEvent e) {
+        String firstName = firstNameField.getText().trim();
+        String lastName = lastNameField.getText().trim();
+        String ageText = ageField.getText().trim();
+        String hoursText = hoursPerDayField.getText().trim();
+        String wageText = hourlyWageField.getText().trim();
+
+        // Empty field checker
+        if (firstName.isEmpty() || lastName.isEmpty() || ageText.isEmpty()
+                || hoursText.isEmpty() || wageText.isEmpty()) {
+            outputArea.setText("Error: All fields must be filled in.");
+            return;
+        }
+
+        int age;
+        try {
+            age = Integer.parseInt(ageText);
+            if (age < 0) {
+                outputArea.setText("Error: Age must be a non-negative integer.");
+                return;
+            }
+        } catch (NumberFormatException ex) {
+            outputArea.setText("Error: Age must be a integer.");
+            return;
+        }
+
+        double hoursPerDay;
+        try {
+            hoursPerDay = Double.parseDouble(hoursText);
+            if (hoursPerDay <= 0) {
+                outputArea.setText("Error: Hours worked must be a positive number.");
+                return;
+            }
+        } catch (NumberFormatException ex) {
+            outputArea.setText("Error: Hours worked must be a valid number .");
+            return;
+        }
+
+        double hourlyWage;
+        try {
+            hourlyWage = Double.parseDouble(wageText);
+            if (hourlyWage <= 0) {
+                outputArea.setText("Error: Hourly wage must be a positive number.");
+                return;
+            }
+        } catch (NumberFormatException ex) {
+            outputArea.setText("Error: Hourly wage must be a valid number.");
+            return;
+        }
+
+        // Calculating salary
+        double dailySalary = hoursPerDay * hourlyWage;
+
+        // Displaying results
+        String output = String.format(
+                "Employee: %s %s\nAge: %d\nDaily Salary: PHP %.2f",
+                firstName, lastName, age, dailySalary
+        );
+        outputArea.setText(output);
+    }
+
+    public static void main(String[] args) {
+        new EmployeeSystemGUI();
+    }
+}
