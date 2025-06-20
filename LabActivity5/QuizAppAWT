@@ -1,0 +1,150 @@
+import java.awt.*;
+import java.awt.event.*;
+
+public class QuizAppAWT extends Frame implements ActionListener {
+
+    // Components
+    Label questionLabel;
+    Label errorLabel;
+    CheckboxGroup optionsGroup;
+    Checkbox[] options = new Checkbox[4];
+    Button nextButton;
+
+    // Quiz data
+    String[] questions = {
+        "Which of the following is NOT a valid access modifier in Java?",
+        "Which language is used for Android app development?",
+        "Which can be used to achieve runtime polymorphism in Java?"
+    };
+
+    String[][] choices = {
+        {"private", "protected", "public", "internal"},
+        {"Python", "Kotlin", "Swift", "JavaScript"},
+        {"Inheritance and method overriding", "Method overloading", "Constructors", "Final methods."}
+    };
+
+    int[] answers = {3, 1, 0}; // Correct answer indices
+
+    // Tracking state
+    int currentQuestion = 0;
+    int score = 0;
+
+    public QuizAppAWT() {
+        // Frame settings
+        setTitle("Quiz App");
+        setSize(500, 400);
+        setLayout(new BorderLayout());
+        setLocationRelativeTo(null); // Center the window
+        setResizable(false);
+
+        // Top panel with question
+        Panel questionPanel = new Panel(new BorderLayout());
+        questionLabel = new Label();
+        questionLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        questionLabel.setAlignment(Label.CENTER);
+        questionPanel.add(questionLabel, BorderLayout.CENTER);
+        questionPanel.setPreferredSize(new Dimension(500, 60));
+        add(questionPanel, BorderLayout.NORTH);
+
+        // Center panel with options
+        Panel optionsPanel = new Panel(new GridLayout(2, 2, 10, 10));
+        optionsGroup = new CheckboxGroup();
+
+        for (int i = 0; i < 4; i++) {
+            options[i] = new Checkbox("", optionsGroup, false);
+            options[i].setFont(new Font("Arial", Font.BOLD, 14));
+            options[i].setForeground(Color.BLACK);
+            optionsPanel.add(options[i]);
+        }
+
+        Panel centerPanel = new Panel(new BorderLayout());
+        centerPanel.add(optionsPanel, BorderLayout.CENTER);
+        add(centerPanel, BorderLayout.CENTER);
+
+        // Bottom panel with error label and button
+        Panel bottomPanel = new Panel(new GridLayout(2, 1));
+
+        // Error label
+        errorLabel = new Label("Please select an answer.");
+        errorLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        errorLabel.setForeground(Color.RED);
+        errorLabel.setAlignment(Label.CENTER);
+        errorLabel.setVisible(false);
+        bottomPanel.add(errorLabel);
+
+        // Next button
+        nextButton = new Button("Next");
+        nextButton.setFont(new Font("Arial", Font.BOLD, 14));
+        nextButton.setBackground(Color.CYAN);
+        nextButton.addActionListener(this);
+        Panel buttonPanel = new Panel(new BorderLayout());
+        buttonPanel.add(nextButton, BorderLayout.CENTER);
+        bottomPanel.add(buttonPanel);
+
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        // Display first question
+        displayQuestion();
+
+        // Window close behavior
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                dispose();
+                System.exit(0);
+            }
+        });
+
+        setVisible(true);
+    }
+
+    public void displayQuestion() {
+        questionLabel.setText("Q" + (currentQuestion + 1) + ": " + questions[currentQuestion]);
+        String[] letters = {"A. ", "B. ", "C. ", "D. "};
+        for (int i = 0; i < 4; i++) {
+            options[i].setLabel(letters[i] + choices[currentQuestion][i]);
+            options[i].setState(false); // Reset selection
+        }
+        errorLabel.setVisible(false); // Hide error
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        int selectedIndex = -1;
+        for (int i = 0; i < 4; i++) {
+            if (options[i].getState()) {
+                selectedIndex = i;
+                break;
+            }
+        }
+
+        if (selectedIndex == -1) {
+            errorLabel.setVisible(true);
+            return;
+        }
+
+        if (selectedIndex == answers[currentQuestion]) {
+            score++;
+        }
+
+        currentQuestion++;
+
+        if (currentQuestion < questions.length) {
+            displayQuestion();
+        } else {
+            showFinalScore();
+        }
+    }
+
+    private void showFinalScore() {
+        questionLabel.setText("Quiz Completed! You got " + score + " out of " + questions.length + " correct.");
+        for (Checkbox cb : options) {
+            cb.setEnabled(false);
+        }
+        nextButton.setEnabled(false);
+        errorLabel.setVisible(false);
+    }
+
+    public static void main(String[] args) {
+        new QuizAppAWT();
+    }
+}
